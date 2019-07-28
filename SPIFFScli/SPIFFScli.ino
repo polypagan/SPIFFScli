@@ -1,7 +1,13 @@
 #include <Streaming.h>  // my preferred method
 
-#include "FS.h"
-#include "SPIFFS.h"
+#if ! defined(ESP32)
+  #error "This sketch currently only works on ESP32!"
+#endif
+
+#include <FS.h>
+#include <SPIFFS.h>
+
+
 
 /* You only need to format SPIFFS the first time you run a
    test or else use the SPIFFS plugin to create a partition
@@ -36,6 +42,7 @@ void trace(char *msg) {
 void usage() {
 
   Serial << "L)ist" << endl
+         << "A)vailable" << endl
          << "R)emove <filename>" << endl
          << "M)ove <file1> <file2>" << endl
          << "D)ump <filename>" << endl
@@ -71,6 +78,13 @@ char a = 'n';
 // file system operations
 // most are lifted from SPIFFS_Test Example
 
+void diskFree(fs::FS &fs) {
+
+  Serial.printf("\n%s\n\n", "Space on Volume");
+// argument passed is not used because following line fails to compile.  
+//  Serial.printf("%s\t%s\t%s\n%d\t%d\t%d\n", "Total", "Used", "Free", fs.totalBytes(), fs.usedBytes(), fs.totalBytes() - fs.usedBytes());
+  Serial.printf("%s\t%s\t%s\n%d\t%d\t%d\n", "Total", "Used", "Free", SPIFFS.totalBytes(), SPIFFS.usedBytes(), SPIFFS.totalBytes() - SPIFFS.usedBytes());
+}
 // list the directory (root)
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
     Serial.printf("Listing directory: %s\r\n", dirname);
@@ -246,6 +260,11 @@ boolean b;
       listDir(SPIFFS, "/", 0);
       break;
 
+    case 'A' :    // Display space available
+    case 'a' :
+      diskFree(SPIFFS);
+      break;
+      
     case 'R' :    // R)emove file
     case 'r' :
       Serial << "rm " << Name1 << endl;
