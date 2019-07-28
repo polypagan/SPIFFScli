@@ -7,11 +7,19 @@ from the code:
 void usage() {
 
   Serial << "L)ist" << endl
+  
+         << "A)vailable" << endl
+         
          << "R)emove <filename>" << endl
+         
          << "M)ove <file1> <file2>" << endl
+         
          << "D)ump <filename>" << endl
+         
          << "C)p <file1> <file2>" << endl
+         
          << "T)ouch <filename>" << endl;
+         
 }
 
 Command parser ignores any characters after first alphabetic, until space or tab seen.
